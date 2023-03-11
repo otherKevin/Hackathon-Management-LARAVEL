@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+    php-apache:
+        container_name: php-apache
+        image: php:8.0-apache
+        volumes:
+            - ./src:/var/www/html/
+        ports:
+            - 8000:80
+    db:
+        image: mysql:5.7
+        platform: linux/x86_64
+        container_name: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: app_db
+            MYSQL_USER: user_1
+            MYSQL_PASSWORD: root
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./dbdata:/var/lib/mysql
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        links:
+            - db
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        restart: always
+        ports:
+            - 8080:80
